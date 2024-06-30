@@ -1,0 +1,49 @@
+<div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <img src="/static/icon.png" id="navbar-icon">
+            <span class="fs-4" id="navbar-brand">Phish Blitz</span>
+        </a>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a href="#" class="nav-link" aria-current="page">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="/fetch-urls" class="nav-link">Get Started</a>
+            </li>
+        </ul>
+    </header>
+</div>
+
+<style>
+    /* Navbar Icon */
+    #navbar-icon {
+        width: 40px; /* Adjust size as needed */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    #navbar-icon:hover {
+        transform: rotate(10deg);
+    }
+
+    /* Navbar Brand */
+    #navbar-brand {
+        transition: color 0.3s ease-in-out;
+    }
+
+    #navbar-brand:hover {
+        color: #007bff;
+    }
+
+    /* Navbar Links */
+    .nav-link {
+        margin-right:2px;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+    .nav-link:hover {
+        background-color: #681abb;
+        color: #fff;
+    }
+</style>
