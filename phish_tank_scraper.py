@@ -78,21 +78,25 @@ def scraping(html_content, data):
         time_list.append(formatted_time)
         url = td[1].get_text(strip=True).split()[0]
         new_url = remove_last_part_of_url(url)
-        try:
-            response = requests.get(new_url, timeout=10)
-            if not response.status_code == 200:
-                print('Phishing site: Status code not 200')
-                continue
-            print("Phishing site returns 200")
-            urls.append(new_url)
-            valid_phish.append(td[3])
-            online.append(td[4])
-        except requests.RequestException:
-            print('Phishing site: Unable to get response')
-            continue
+        urls.append(new_url)
+        valid_phish.append(td[3])
+        online.append(td[4])
+
+        # try:
+        #     response = requests.get(new_url, timeout=10)
+        #     if not response.status_code == 200:
+        #         print('Phishing site: Status code not 200')
+        #         continue
+        #     print("Phishing site returns 200")
+        #     urls.append(new_url)
+        #     valid_phish.append(td[3])
+        #     online.append(td[4])
+        # except requests.RequestException:
+        #     print('Phishing site: Unable to get response')
+        #     continue
 
     cutoff_date_str = threshold_time('time_old.txt')
-    print('cutoff = ' + cutoff_date_str)
+    # print('cutoff = ' + cutoff_date_str)
     cutoff_date = datetime.strptime(cutoff_date_str, "%Y-%m-%d %H:%M:%S")
 
     for i in range(len(urls)):
