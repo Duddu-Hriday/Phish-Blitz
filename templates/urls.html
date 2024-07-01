@@ -92,14 +92,14 @@
                     JS, and images. It's a comprehensive tool for research, allowing you to analyze phishing sites in
                     depth and stay ahead of security threats.</p>
             </div>
-            <form action="/phishing-urls" method="POST" class="myForm">
+            <form action="/phishing-urls" method="POST" id="myForm">
                 <label for="userInput">Enter Count of Pages:</label><br><br>
                 <input type="text" id="userInput" name="userInput"><br><br>
                 <input type="submit" value="Submit" class="btn btn-primary">
             </form>
 
             <script>
-                document.getElementsByClass('myForm').addEventListener('submit', function () {
+                document.getElementById('myForm').addEventListener('submit', function () {
                     // Show loading popup when form is submitted
                     document.getElementById('loadingPopup').style.display = 'flex';
                 });
@@ -117,7 +117,7 @@
                     resources including HTML, CSS, JS, and images. This feature-rich tool supports detailed analysis of
                     legitimate websites, perfect for research or enhancing your web development projects.</p>
             </div>
-            <form action="/legitimate-urls" method="POST" class="myForm">
+            <form action="/legitimate-urls" method="POST">
                 <label for="userInputLegit">Enter Count of URLs:</label><br><br>
                 <input type="text" id="userInputLegit" name="userInputLegit"><br><br>
                 <input type="submit" value="Submit" class="btn btn-primary">
