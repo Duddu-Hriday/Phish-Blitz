@@ -3,3 +3,7 @@ beautifulsoup4
 lxml
 Flask
 gunicorn
+pandas
+tldextract
+numpy
+python-whois

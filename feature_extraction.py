@@ -1,13 +1,7 @@
-import os
 import pandas as pd
-from bs4 import BeautifulSoup, Comment
 import tldextract
 import numpy as np
 from urllib.parse import urlparse
-import csv
-
-import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urlparse
 import whois
 
