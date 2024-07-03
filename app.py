@@ -74,15 +74,10 @@ def legitimate_features():
     features = extract_features(legitimate_urls_dict)
     return render_template('legitimate-url-features.html',features = features)
 
-@app.route("/download-legitimate")
-def intermeditate_step():
-    return render_template('download-legitimate.html')
 
-@app.route('/download-legitimate-sites', methods=['GET', 'POST'])
+@app.route('/download-legitimate-sites')
 def download_legitimate_sites():
     global legitimate_urls_dict
-    download_path = request.form['folderPath'].replace('\\', '/')
-    print(download_path)
     csv_file = "info.csv"
     if os.path.exists(csv_file):
         print("csv file already exists")
@@ -94,10 +89,9 @@ def download_legitimate_sites():
             # Writing the header
             csvwriter.writerow(headers)
 
-    # resources_base_dir = 'legitimate_resources'
-    resources_base_dir  = os.path.join(download_path,'legitimate_resources')
-    partially_downloaded_base_dir = os.path.join(download_path,'partially_downloaded_web_pages')
-    # os.makedirs(partially_downloaded_base_dir, exist_ok=True)
+    resources_base_dir = 'legitimate_resources'
+    partially_downloaded_base_dir = 'partially_downloaded_web_pages'
+    os.makedirs(partially_downloaded_base_dir, exist_ok=True)
     count = 0
 
     for url_dict in legitimate_urls_dict:
@@ -158,7 +152,7 @@ def download_legitimate_sites():
                         is_index = True
                         break
                 else:
-                    # count -= 1
+                    count -= 1
                     move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
             index_html = 'index.html'
@@ -193,16 +187,16 @@ def download_legitimate_sites():
 
             if not os.path.exists(online) or not os.path.exists(offline):
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
-                # count -= 1
+                count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
             ssim_index, hist_corr = compare_images(online, offline)
 
             print(f"SSIM Index: {ssim_index}")
             print(f"Histogram Correlation: {hist_corr}")
-            if hist_corr < 0.9:
-                logging.warning(f"Histogram correlation {hist_corr} is less than 0.9. Deleting {outer_folder}...")
-                # count -= 1
+            if hist_corr < 0.8:
+                logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
+                count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
             with open('image_comparision.txt', 'a') as file:
