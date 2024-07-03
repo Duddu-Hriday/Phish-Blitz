@@ -7,3 +7,7 @@ pandas
 tldextract
 numpy
 python-whois
+chardet
+opencv-python-headless
+selenium
+scikit-image

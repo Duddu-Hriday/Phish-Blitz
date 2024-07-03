@@ -82,49 +82,75 @@
         <div class="loading-text">loading...This step may take seconds to minutes..depending on the number of urls you
             chose</div>
     </div>
-    <div style="display: flex;flex-direction: row;padding-top:4%;">
-        <div class="card" style="width: 18rem;margin-left: 20%;padding:10px 20px;">
-            <img src="/static/phishing.png" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Phishing Urls</h5>
-                <p class="card-text">Easily access phishing URLs sourced from PhishTank through our service. Once you
-                    have the URLs, extract their features and even download the full web resources such as HTML, CSS,
-                    JS, and images. It's a comprehensive tool for research, allowing you to analyze phishing sites in
-                    depth and stay ahead of security threats.</p>
+    <div class="container text-center">
+        <div class="row justify-content-around" style="margin-bottom: 20px;">
+    
+            <!--------------------------------------------------------------------------------------------->
+            <div class="card col-4" style="display: flex;align-items: center;justify-content: center;">
+                <img src="/static/live-phishing.png" class="card-img-top" alt="live-phishing" style="width:200px;">
+                <div class="card-body">
+                    <h5 class="card-title">Phishing Urls</h5>
+                    <p class="card-text">Get Live Phishing websites from Phishtank</p>
+                
+                <form action="/phishing-urls" method="POST" id="myForm">
+                    <label for="userInput">Enter Count of Pages:</label><br><br>
+                    <input type="text" id="userInput" name="userInput" required><br><br>
+                    <input type="submit" value="Submit" class="btn btn-primary">
+                </form>
             </div>
-            <form action="/phishing-urls" method="POST" id="myForm">
-                <label for="userInput">Enter Count of Pages:</label><br><br>
-                <input type="text" id="userInput" name="userInput"><br><br>
-                <input type="submit" value="Submit" class="btn btn-primary">
-            </form>
-
-            <script>
-                document.getElementById('myForm').addEventListener('submit', function () {
-                    // Show loading popup when form is submitted
-                    document.getElementById('loadingPopup').style.display = 'flex';
-                });
-            </script>
-
-            <div class="card-body">
+                <script>
+                    document.getElementById('myForm').addEventListener('submit', function () {
+                        // Show loading popup when form is submitted
+                        document.getElementById('loadingPopup').style.display = 'flex';
+                    });
+                </script>
+            </div>
+            <!-- --------------------------------------------------------------------------------------- -->
+            <div class="card col-4" style="display: flex;align-items: center;justify-content: center;">
+                <img src="/static/legitimate.png" class="card-img-top" alt="..."  style="width:200px;">
+                <div class="card-body">
+                    <h5 class="card-title">Legitimate URLs</h5>
+                    <p class="card-text">Page Rank wise URLs</p>
+                </div>
+                <form action="/legitimate-urls" method="POST">
+                    <label for="userInputLegit">Enter Count of URLs:</label><br><br>
+                    <input type="text" id="userInputLegit" name="userInputLegit" required><br><br>
+                    <input type="submit" value="Submit" class="btn btn-primary">
+                </form>
             </div>
         </div>
-        <div class="card" style="width: 18rem;margin-left:10%;padding:10px 20px;">
-            <img src="/static/legit.png" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Legitimate URLs</h5>
-                <p class="card-text">Explore top-ranked legitimate URLs effortlessly with our service. We fetch the most
-                    reputable sites for you, and just like with phishing URLs, you can download their complete web
-                    resources including HTML, CSS, JS, and images. This feature-rich tool supports detailed analysis of
-                    legitimate websites, perfect for research or enhancing your web development projects.</p>
+        <div class="row justify-content-around" >
+            <!-- --------------------------------------------------------------------------------------- -->
+            <div class="card col-4" style="display: flex;align-items: center;justify-content: center;">
+                <img src="/static/pre-pishing.png" class="card-img-top" alt="..."  style="width:200px;">
+                <div class="card-body">
+                    <h5 class="card-title">Phishing URLs</h5>
+                    <p class="card-text">Pre Collected Phishing URLs from various sites</p>
+                </div>
+                <form action="/pre-phishing-urls" method="POST">
+                    <!-- <label for="userInputLegit">Enter Count of URLs:</label><br><br>
+                <input type="text" id="userInputLegit" name="userInputLegit" required><br><br>
+                <input type="submit" value="Submit" class="btn btn-primary"> -->
+                    <a class="btn btn-primary">See Collection</a>
+                </form>
+    
             </div>
-            <form action="/legitimate-urls" method="POST">
+            <!-- --------------------------------------------------------------------------------------- -->
+            <div class="card col-4" style="display: flex;align-items: center;justify-content: center;">
+                <img src="/static/your-choice.png" class="card-img-top" alt="..."  style="width:200px;">
+                <div class="card-body">
+                    <h5 class="card-title">Your Choice URLs</h5>
+                    <p class="card-text">Give your choice of urls and extract features + Download web pages</p>
+                </div>
+                <!-- <form action="/legitimate-urls" method="POST">
                 <label for="userInputLegit">Enter Count of URLs:</label><br><br>
-                <input type="text" id="userInputLegit" name="userInputLegit"><br><br>
+                <input type="text" id="userInputLegit" name="userInputLegit" required><br><br>
                 <input type="submit" value="Submit" class="btn btn-primary">
-            </form>
-
-            <div class="card-body">
+            </form> -->
+                <a class="btn btn-primary">Get Started</a>
+    
             </div>
+            <!-- --------------------------------------------------------------------------------------- -->
         </div>
     </div>
 </body>
