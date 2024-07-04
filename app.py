@@ -89,8 +89,11 @@ def download_legitimate_sites():
             # Writing the header
             csvwriter.writerow(headers)
 
-    resources_base_dir = 'legitimate_resources'
-    partially_downloaded_base_dir = 'partially_downloaded_web_pages'
+    user_downloads_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+    resources_base_dir = os.path.join(user_downloads_dir, 'legitimate_resources')
+    partially_downloaded_base_dir = os.path.join(user_downloads_dir, 'partially_downloaded_web_pages')
+
+    os.makedirs(resources_base_dir, exist_ok=True)
     os.makedirs(partially_downloaded_base_dir, exist_ok=True)
     count = 0
 
