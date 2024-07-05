@@ -307,6 +307,7 @@ def update_html(html_file, resource_dir, new_cleaned_url):
     print("Update completed.")
 
 def clean_url(url):
+
     parsed_url = urlparse(url)
     
     # Remove :443 if it is present in the netloc

@@ -78,7 +78,15 @@ def legitimate_features():
 @app.route('/download-legitimate-sites')
 def download_legitimate_sites():
     global legitimate_urls_dict
-    csv_file = "info.csv"
+    
+
+    base_dir = 'legitimate_resources'
+    resources_base_dir = os.path.join(base_dir, 'fully_downloaded_web_pages')
+    partially_downloaded_base_dir = os.path.join(base_dir, 'partially_downloaded_web_pages')
+    os.makedirs(resources_base_dir, exist_ok=True)
+    os.makedirs(partially_downloaded_base_dir, exist_ok=True)
+
+    csv_file = os.path.join(base_dir,"info.csv")
     if os.path.exists(csv_file):
         print("csv file already exists")
     else:
@@ -89,15 +97,152 @@ def download_legitimate_sites():
             # Writing the header
             csvwriter.writerow(headers)
 
-    user_downloads_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-    resources_base_dir = os.path.join(user_downloads_dir, 'legitimate_resources')
-    partially_downloaded_base_dir = os.path.join(user_downloads_dir, 'partially_downloaded_web_pages')
-
-    os.makedirs(resources_base_dir, exist_ok=True)
-    os.makedirs(partially_downloaded_base_dir, exist_ok=True)
     count = 0
 
     for url_dict in legitimate_urls_dict:
+
+        count += 1
+        try:
+            url = "https://" + url_dict['url']
+            new_cleaned_url = clean_url(url)
+            cleaned_url = new_cleaned_url[8:]
+            folder = cleaned_url
+            domain = tldextract.extract(cleaned_url).domain
+            outer_folder = os.path.join(resources_base_dir, f"{count}_{domain}")
+            print(cleaned_url + " -> " + folder)
+
+            user_agents = [
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
+                # Add more user agents as needed
+            ]
+            user_agent = random.choice(user_agents)
+
+            command = [
+                'wget',
+                '--mirror',
+                '--convert-links',
+                '--adjust-extension',
+                '--page-requisites',
+                '--no-parent',
+                '-U',
+                user_agent,
+                '--timeout=10',
+                '-o', 'log.txt',
+                '-P', outer_folder,
+                new_cleaned_url
+            ]
+
+            # Prefix the wget command with `timeout 30`
+            full_command = ['timeout', '10'] + command
+
+            result = subprocess.run(full_command, text=True, capture_output=True)
+
+            logging.info(result)
+            full_folder = os.path.join(outer_folder, folder)
+
+            is_index = False
+            for filename in os.listdir(full_folder):
+                if os.path.isfile(os.path.join(full_folder, filename)):
+                    if filename == "index.html":
+                        index_html = 'index.html'
+                        is_index = True
+                        break
+
+            if not is_index:
+                for filename in os.listdir(full_folder):
+                    if os.path.isfile(os.path.join(full_folder, filename)) and filename.endswith('html'):
+                        index_html = filename
+                        is_index = True
+                        break
+                else:
+                    count -= 1
+                    move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+
+            index_html = 'index.html'
+            print("HTML FILE = " + index_html)
+
+            html_file = os.path.join(outer_folder, folder, index_html)
+            resource_dir = os.path.join(outer_folder, folder, 'local_resources')
+
+            update_html(html_file, resource_dir, new_cleaned_url)
+            d_time = time.time()
+
+            screenshots = os.path.join(resource_dir, 'screenshots')
+            os.makedirs(screenshots, exist_ok=True)
+            online = os.path.join(screenshots, 'online.png')
+            offline = os.path.join(screenshots, 'offline.png')
+
+            path_wanted = "file://" + os.path.abspath(html_file)
+            print("absolute path = " + path_wanted)
+
+            images = [
+                threading.Thread(target=url_screenshot, args=(new_cleaned_url, online)),
+                threading.Thread(target=url_screenshot, args=(path_wanted, offline)),
+            ]
+
+            print("Starting image parallel tasks...")
+            for task in images:
+                task.start()
+
+            print("Waiting for image tasks to complete...")
+            for task in images:
+                task.join()
+
+            if not os.path.exists(online) or not os.path.exists(offline):
+                logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
+                count -= 1
+                move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+
+            ssim_index, hist_corr = compare_images(online, offline)
+
+            print(f"SSIM Index: {ssim_index}")
+            print(f"Histogram Correlation: {hist_corr}")
+            if hist_corr < 0.8:
+                logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
+                count -= 1
+                move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+
+            image = os.path.join(base_dir,'image_comparision.txt')
+            with open(image, 'a') as file:
+                file.write(f"{cleaned_url}\tSSIM Index = {ssim_index}\tHistogram Correlation = {hist_corr}\n")
+
+            info_arr = [count, cleaned_url, html_file]
+            with open(csv_file, 'a', newline='') as csvfile:
+                csvwriter = csv.writer(csvfile)
+                csvwriter.writerow(info_arr)
+
+        except Exception as e:
+            logging.error(f"An error occurred with URL {url_dict['url']}: {e}")
+            continue   
+    
+    flash('Download complete!', 'success')
+    return render_template('home.html')
+
+@app.route('/download-phishing-sites')
+def download_phishing_sites():
+    global phishing_data
+    
+    base_dir = 'phishing_resources'
+    resources_base_dir = os.path.join(base_dir, 'fully_downloaded_web_pages')
+    partially_downloaded_base_dir = os.path.join(base_dir, 'partially_downloaded_web_pages')
+    os.makedirs(resources_base_dir, exist_ok=True)
+    os.makedirs(partially_downloaded_base_dir, exist_ok=True)
+
+    csv_file = os.path.join(base_dir,"info.csv")
+    if os.path.exists(csv_file):
+        print("csv file already exists")
+    else:
+        print("creating csv file")
+        headers = ['Index', 'URL', 'HTML Folder']
+        with open(csv_file, 'w', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            # Writing the header
+            csvwriter.writerow(headers)
+    count = 0
+
+    for url_dict in phishing_data:
 
         count += 1
         try:
@@ -206,7 +351,7 @@ def download_legitimate_sites():
                 file.write(f"{cleaned_url}\tSSIM Index = {ssim_index}\tHistogram Correlation = {hist_corr}\n")
 
             info_arr = [count, cleaned_url, html_file]
-            with open('info.csv', 'a', newline='') as csvfile:
+            with open(csv_file, 'a', newline='') as csvfile:
                 csvwriter = csv.writer(csvfile)
                 csvwriter.writerow(info_arr)
 
@@ -217,6 +362,29 @@ def download_legitimate_sites():
     flash('Download complete!', 'success')
     return render_template('home.html')
 
+@app.route('/collected-phishing-urls')
+def collected_phishing_urls():
+    return render_template('collected-phishing-urls.html')
 
+@app.route('/choice')
+def choice():
+    return render_template('choice-urls.html')
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    uploaded_file = request.files['file']
+    if uploaded_file.filename != '':
+        global legitimate_urls
+        global legitimate_urls_dict
+        file_lines = uploaded_file.readlines()
+        file_lines_utf8 = [line.decode('utf-8').strip() for line in file_lines]
+        urls_dict = [{"url": url.decode('utf-8').strip()} for url in file_lines]
+        
+        # print(type(urls_dict))
+        legitimate_urls = file_lines_utf8
+        legitimate_urls_dict =urls_dict
+        return render_template('legitimate-urls.html',urls = legitimate_urls,count = len(file_lines))
+    else:
+        return 'file Not Uploaded'
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

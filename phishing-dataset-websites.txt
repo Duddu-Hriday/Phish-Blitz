@@ -1,0 +1,13 @@
+https://openphish.com/index.html
+
+https://commoncrawl.org/
+
+https://stuffgate.com.websiteoutlook.com/
+
+https://archive.ics.uci.edu/dataset/327/phishing+websites
+
+https://www.kaggle.com/datasets/shawon10/url-classification-dataset-dmoz#dmoz.csv
+
+https://github.com/mozilla/cipherscan/tree/master/top1m
+
+https://research.aalto.fi/en/datasets/phishstorm-phishing-legitimate-url-dataset

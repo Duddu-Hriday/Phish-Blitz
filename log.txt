@@ -1,0 +1,4 @@
+--2024-07-05 12:56:09--  https://https//whatsapp.com
+Resolving https (https)... failed: Temporary failure in name resolution.
+wget: unable to resolve host address ‘https’
+Converted links in 0 files in 0 seconds.
