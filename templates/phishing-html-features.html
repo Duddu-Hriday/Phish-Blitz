@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features of phishing urls</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <style>
+            /* Navbar Icon */
+            #navbar-icon {
+                width: 40px;
+                /* Adjust size as needed */
+                transition: transform 0.3s ease-in-out;
+            }
+    
+            #navbar-icon:hover {
+                transform: rotate(10deg);
+            }
+    
+            /* Navbar Brand */
+            #navbar-brand {
+                transition: color 0.3s ease-in-out;
+            }
+    
+            #navbar-brand:hover {
+                color: #007bff;
+            }
+    
+            /* Navbar Links */
+            .nav-link {
+                margin-right: 2px;
+                transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+            }
+    
+            .nav-link:hover {
+                background-color: #681abb;
+                color: #fff;
+            }
+        </style>
+        <script>
+            function download_urls() {
+                const urls = JSON.parse(document.getElementById('url-data').getAttribute('data-urls'));
+                const formattedJson = JSON.stringify(urls, null, 2); // Pretty-print JSON with 2 spaces indentation
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(formattedJson);
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "legitimate-url-features.json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            }
+        </script>
+</head>
+<body>
+    <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                <img src="/static/icon.png" id="navbar-icon">
+                <span class="fs-4" id="navbar-brand">Phish Blitz</span>
+            </a>
+
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a href="/" class="nav-link" aria-current="page">Home</a>
+                </li>
+                <li class="nav-item">
+                </li>
+            </ul>
+        </header>
+    </div>
+
+    <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+
+            <span class="fs-4" id="navbar-brand">Legitimate URL Features</span>
+
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <button onclick="download_urls()" class="nav-link" aria-current="page">Download Features</a>
+                </li>
+            </ul>
+        </header>
+    </div>
+    <div id="url-data" data-urls='{{ features|tojson|safe }}'></div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">URL</th>
+                <th scope="col">Internal Links</th>
+                <th scope="col">External Links</th>
+                <th scope="col">Empty Links</th>
+                <th scope="col">Login Form</th>
+                <th scope="col">HTML Length Tag</th>
+                <th scope="col">HTML Length</th>
+                <th scope="col">Alarm Window</th>
+                <th scope="col">Redirection</th>
+                <th scope="col">Hidden Divs</th>
+                <th scope="col">Title Domain</th>
+                <th scope="col">Internal Resources</th>
+                <th scope="col">External Resources</th>
+                <th scope="col">Domain Occurence</th>
+                <th scope="col">Brand Domain</th>
+                <th scope="col">Working Links</th>
+                <th scope="col">Not Working Links </th>
+                <th scope="col">Multiple HTTPs</th>
+                <th scope="col">Form Empty Action</th>
+                <th scope="col">Same Form Action Domain</th>
+                <th scope="col">Is Mail</th>
+                <th scope="col">Number of Redirects</th>
+                <th scope="col">StatusBar Customization</th>
+
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for feature in features %}
+            <tr>
+                <td scope="col">{{feature.url}}</td>
+                <td scope="col">{{feature.internal_link}}</td>
+                <td scope="col">{{feature.external_link}}</td>
+                <td scope="col">{{feature.empty_link}}</td>
+                <td scope="col">{{feature.login_form}}</td>
+                <td scope="col">{{feature.html_len_tag}}</td>
+                <td scope="col">{{feature.html_len}}</td>
+                <td scope="col">{{feature.alarm_window}}</td>
+                <td scope="col">{{feature.redirection}}</td>
+                <td scope="col">{{feature.hidden}}</td>
+                <td scope="col">{{feature.title_domain}}</td>
+                <td scope="col">{{feature.internal_resource}}</td>
+                <td scope="col">{{feature.external_resource}}</td>
+                <td scope="col">{{feature.domain_occurence}}</td>
+                <td scope="col">{{feature.brand_domain}}</td>
+                <td scope="col">{{feature.working_links}}</td>
+                <td scope="col">{{feature.not_working_links }}</td>
+                <td scope="col">{{feature.multiple_https}}</td>
+                <td scope="col">{{feature.form_empty_action}}</td>
+                <td scope="col">{{feature.same_form_action_domain}}</td>
+                <td scope="col">{{feature.is_mail}}</td>
+                <td scope="col">{{feature.number_of_redirects}}</td>
+                <td scope="col">{{feature.status_bar_customization}}</td>
+
+
+                    
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, flash,redirect,url_for
 import time
 from concurrent.futures import ThreadPoolExecutor
 from phish_tank_scraper import fetch_and_scrape_page
-from feature_extraction import extract_features
+from url_features_extraction import extract_features
+from html_features_extraction import main_fun
 from download_webpage import clean_url,update_html,url_screenshot,compare_images,move_to_partially_downloaded
 import os
 import csv
@@ -103,9 +104,16 @@ def download_legitimate_sites():
 
         count += 1
         try:
-            url = "https://" + url_dict['url']
+            if not(url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
+                url = "https://" + url_dict['url']
+            else:
+                url = url_dict['url']
             new_cleaned_url = clean_url(url)
-            cleaned_url = new_cleaned_url[8:]
+            if new_cleaned_url.startswith('http://'):
+                cleaned_url =  new_cleaned_url[7:]
+            else:
+                cleaned_url = new_cleaned_url[8:]
+
             folder = cleaned_url
             domain = tldextract.extract(cleaned_url).domain
             outer_folder = os.path.join(resources_base_dir, f"{count}_{domain}")
@@ -218,7 +226,7 @@ def download_legitimate_sites():
             continue   
     
     flash('Download complete!', 'success')
-    return render_template('home.html')
+    return render_template('download-legitimate-intermediate.html')
 
 @app.route('/download-phishing-sites')
 def download_phishing_sites():
@@ -246,9 +254,15 @@ def download_phishing_sites():
 
         count += 1
         try:
-            url = "https://" + url_dict['url']
+            if not(url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
+                url = "https://" + url_dict['url']
+            else:
+                url = url_dict['url']
             new_cleaned_url = clean_url(url)
-            cleaned_url = new_cleaned_url[8:]
+            if new_cleaned_url.startswith('http://'):
+                cleaned_url =  new_cleaned_url[7:]
+            else:
+                cleaned_url = new_cleaned_url[8:]
             folder = cleaned_url
             domain = tldextract.extract(cleaned_url).domain
             outer_folder = os.path.join(resources_base_dir, f"{count}_{domain}")
@@ -360,7 +374,7 @@ def download_phishing_sites():
             continue   
     
     flash('Download complete!', 'success')
-    return render_template('home.html')
+    return render_template('download-phishing-intermediate.html')
 
 @app.route('/collected-phishing-urls')
 def collected_phishing_urls():
@@ -386,5 +400,18 @@ def upload():
         return render_template('legitimate-urls.html',urls = legitimate_urls,count = len(file_lines))
     else:
         return 'file Not Uploaded'
+    
+@app.route('/phishing-html-features')
+def phishing_html_features():
+    features = main_fun('phishing_resources')
+    return render_template('phishing-html-features.html', features = features)
+
+
+@app.route('/legitimate-html-features')
+def legitimate_html_features():
+    features = main_fun('legitimate_resources')
+    print(features)
+    return render_template('legitimate-html-features.html',features = features)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

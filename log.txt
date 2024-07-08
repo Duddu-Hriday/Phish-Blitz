@@ -1,4 +1,34 @@
---2024-07-05 12:56:09--  https://https//whatsapp.com
-Resolving https (https)... failed: Temporary failure in name resolution.
-wget: unable to resolve host address ‘https’
-Converted links in 0 files in 0 seconds.
+--2024-07-08 12:51:20--  https://en.wikipedia.org/
+Resolving en.wikipedia.org (en.wikipedia.org)... 2001:df2:e500:ed1a::1, 103.102.166.224
+Connecting to en.wikipedia.org (en.wikipedia.org)|2001:df2:e500:ed1a::1|:443... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://en.wikipedia.org/wiki/Main_Page [following]
+--2024-07-08 12:51:20--  https://en.wikipedia.org/wiki/Main_Page
+Reusing existing connection to [en.wikipedia.org]:443.
+HTTP request sent, awaiting response... 200 OK
+Length: 110895 (108K) [text/html]
+Saving to: ‘legitimate_resources/fully_downloaded_web_pages/4_wikipedia/en.wikipedia.org/index.html’
+
+     0K .......... .......... .......... .......... .......... 46%  495K 0s
+    50K .......... .......... .......... .......... .......... 92% 1.44M 0s
+   100K ........                                              100% 15.5T=0.1s
+
+2024-07-08 12:51:20 (803 KB/s) - ‘legitimate_resources/fully_downloaded_web_pages/4_wikipedia/en.wikipedia.org/index.html’ saved [110895/110895]
+
+Loading robots.txt; please ignore errors.
+--2024-07-08 12:51:20--  https://en.wikipedia.org/robots.txt
+Reusing existing connection to [en.wikipedia.org]:443.
+HTTP request sent, awaiting response... 200 OK
+Length: 27524 (27K) [text/plain]
+Saving to: ‘legitimate_resources/fully_downloaded_web_pages/4_wikipedia/en.wikipedia.org/robots.txt’
+
+     0K .......... .......... ......                          100% 5.23M=0.005s
+
+2024-07-08 12:51:20 (5.23 MB/s) - ‘legitimate_resources/fully_downloaded_web_pages/4_wikipedia/en.wikipedia.org/robots.txt’ saved [27524/27524]
+
+FINISHED --2024-07-08 12:51:20--
+Total wall clock time: 0.5s
+Downloaded: 2 files, 135K in 0.1s (966 KB/s)
+Converting links in legitimate_resources/fully_downloaded_web_pages/4_wikipedia/en.wikipedia.org/index.html... 274.
+7-267
+Converted links in 1 files in 0.002 seconds.
