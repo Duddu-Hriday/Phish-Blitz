@@ -1,7 +1,0 @@
-gmpg.org	SSIM Index = 1.0	Histogram Correlation = 1.0
-maps.google.com	SSIM Index = 0.4638648442516163	Histogram Correlation = -0.00011033386252798152
-facebook.com	SSIM Index = 0.8749954144125475	Histogram Correlation = 0.305390083992222
-github.com	SSIM Index = 0.16457775088884544	Histogram Correlation = 0.02386228396926293
-cdnjs.cloudflare.com	SSIM Index = 0.9984213716675806	Histogram Correlation = 0.9999996859130839
-google.com	SSIM Index = 0.9001467133084395	Histogram Correlation = 0.9948353657683648
-en.wikipedia.org	SSIM Index = 0.9972377171688047	Histogram Correlation = 0.9999995247534285
