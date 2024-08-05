@@ -206,7 +206,7 @@ def download_legitimate_sites():
             if not os.path.exists(online) or not os.path.exists(offline):
                 screenshots_taken = False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
-                count -= 1
+                # count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
             ssim_index, hist_corr = compare_images(online, offline)
@@ -367,7 +367,7 @@ def download_phishing_sites():
             if not os.path.exists(online) or not os.path.exists(offline):
                 screenshots_taken =  False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
-                count -= 1
+                # count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
             ssim_index, hist_corr = compare_images(online, offline)
