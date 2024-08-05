@@ -13,6 +13,7 @@ import tldextract
 import subprocess
 import threading
 import random
+import time
 
 app = Flask(__name__)
 app.secret_key = "Hello Hriday"
@@ -83,7 +84,7 @@ def download_legitimate_sites():
 
     base_dir = 'legitimate_resources'
     resources_base_dir = os.path.join(base_dir, 'fully_downloaded_web_pages')
-    partially_downloaded_base_dir = os.path.join(base_dir, 'partially_downloaded_web_pages')
+    partially_downloaded_base_dir = os.path.join(base_dir, 'no_screenshot_web_pages')
     os.makedirs(resources_base_dir, exist_ok=True)
     os.makedirs(partially_downloaded_base_dir, exist_ok=True)
 
@@ -104,6 +105,7 @@ def download_legitimate_sites():
 
         count += 1
         try:
+            start_time = time.time()
             if not(url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
                 url = "https://" + url_dict['url']
             else:
@@ -165,8 +167,10 @@ def download_legitimate_sites():
                         is_index = True
                         break
                 else:
-                    count -= 1
-                    move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+                    print('index.html not found')
+                    continue
+                    # count -= 1
+                    # move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
             index_html = 'index.html'
             print("HTML FILE = " + index_html)
@@ -184,7 +188,7 @@ def download_legitimate_sites():
 
             path_wanted = "file://" + os.path.abspath(html_file)
             print("absolute path = " + path_wanted)
-
+            ss_start = time.time()
             images = [
                 threading.Thread(target=url_screenshot, args=(new_cleaned_url, online)),
                 threading.Thread(target=url_screenshot, args=(path_wanted, offline)),
@@ -197,8 +201,10 @@ def download_legitimate_sites():
             print("Waiting for image tasks to complete...")
             for task in images:
                 task.join()
-
+            ss_end = time.time()
+            screenshots_taken = True
             if not os.path.exists(online) or not os.path.exists(offline):
+                screenshots_taken = False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
                 count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
@@ -207,11 +213,15 @@ def download_legitimate_sites():
 
             print(f"SSIM Index: {ssim_index}")
             print(f"Histogram Correlation: {hist_corr}")
-            if hist_corr < 0.8:
-                logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
-                count -= 1
-                move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
-
+            # if hist_corr < 0.8:
+            #     logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
+            #     count -= 1
+            #     move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+            end_time = time.time()
+            total_time = end_time - start_time
+            ss_time = ss_end - ss_end
+            with open("legitimate_observations.txt",'a') as obs_file:
+                obs_file.write(total_time+","+ss_time+","+screenshots_taken+"\n")
             image = os.path.join(base_dir,'image_comparision.txt')
             with open(image, 'a') as file:
                 file.write(f"{cleaned_url}\tSSIM Index = {ssim_index}\tHistogram Correlation = {hist_corr}\n")
@@ -234,7 +244,7 @@ def download_phishing_sites():
     
     base_dir = 'phishing_resources'
     resources_base_dir = os.path.join(base_dir, 'fully_downloaded_web_pages')
-    partially_downloaded_base_dir = os.path.join(base_dir, 'partially_downloaded_web_pages')
+    partially_downloaded_base_dir = os.path.join(base_dir, 'no_screenshot_web_pages')
     os.makedirs(resources_base_dir, exist_ok=True)
     os.makedirs(partially_downloaded_base_dir, exist_ok=True)
 
@@ -254,6 +264,7 @@ def download_phishing_sites():
 
         count += 1
         try:
+            start_time = time.time()
             if not(url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
                 url = "https://" + url_dict['url']
             else:
@@ -314,8 +325,10 @@ def download_phishing_sites():
                         is_index = True
                         break
                 else:
-                    count -= 1
-                    move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+                    print("index.html not found")
+                    continue
+                    # count -= 1
+                    # move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
             index_html = 'index.html'
             print("HTML FILE = " + index_html)
@@ -333,7 +346,7 @@ def download_phishing_sites():
 
             path_wanted = "file://" + os.path.abspath(html_file)
             print("absolute path = " + path_wanted)
-
+            ss_start = time.time()
             images = [
                 threading.Thread(target=url_screenshot, args=(new_cleaned_url, online)),
                 threading.Thread(target=url_screenshot, args=(path_wanted, offline)),
@@ -346,8 +359,10 @@ def download_phishing_sites():
             print("Waiting for image tasks to complete...")
             for task in images:
                 task.join()
-
+            ss_end = time.time()
+            screenshots_taken = True
             if not os.path.exists(online) or not os.path.exists(offline):
+                screenshots_taken =  False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
                 count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
@@ -356,11 +371,15 @@ def download_phishing_sites():
 
             print(f"SSIM Index: {ssim_index}")
             print(f"Histogram Correlation: {hist_corr}")
-            if hist_corr < 0.8:
-                logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
-                count -= 1
-                move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
-
+            # if hist_corr < 0.8:
+            #     logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
+            #     count -= 1
+            #     move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+            end_time = time.time()
+            total_time = end_time - start_time
+            ss_time = ss_end - ss_start
+            with open("phishing_observations.txt","a") as obs_file:
+                obs_file.write(total_time+","+ss_time+","+screenshots_taken+"\n")
             with open('image_comparision.txt', 'a') as file:
                 file.write(f"{cleaned_url}\tSSIM Index = {ssim_index}\tHistogram Correlation = {hist_corr}\n")
 
