@@ -219,14 +219,17 @@ def download_legitimate_sites():
             #     move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
             end_time = time.time()
             total_time = end_time - start_time
-            ss_time = ss_end - ss_end
+            ss_time = ss_end - ss_start
+            print(str(total_time)+","+str(ss_time)+","+str(screenshots_taken))
             with open("legitimate_observations.txt",'a') as obs_file:
-                obs_file.write(total_time+","+ss_time+","+screenshots_taken+"\n")
+                obs_file.write(str(total_time)+","+str(ss_time)+","+str(screenshots_taken)+"\n")
             image = os.path.join(base_dir,'image_comparision.txt')
+            print(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
             with open(image, 'a') as file:
-                file.write(f"{cleaned_url}\tSSIM Index = {ssim_index}\tHistogram Correlation = {hist_corr}\n")
+                file.write(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
 
-            info_arr = [count, cleaned_url, html_file]
+            info_arr = [str(count), str(cleaned_url), str(html_file)]
+            print(info_arr)
             with open(csv_file, 'a', newline='') as csvfile:
                 csvwriter = csv.writer(csvfile)
                 csvwriter.writerow(info_arr)
@@ -379,11 +382,11 @@ def download_phishing_sites():
             total_time = end_time - start_time
             ss_time = ss_end - ss_start
             with open("phishing_observations.txt","a") as obs_file:
-                obs_file.write(total_time+","+ss_time+","+screenshots_taken+"\n")
+                obs_file.write(str(total_time)+","+str(ss_time)+","+str(screenshots_taken)+"\n")
             with open('image_comparision.txt', 'a') as file:
-                file.write(f"{cleaned_url}\tSSIM Index = {ssim_index}\tHistogram Correlation = {hist_corr}\n")
+                file.write(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
 
-            info_arr = [count, cleaned_url, html_file]
+            info_arr = [str(count), str(cleaned_url), str(html_file)]
             with open(csv_file, 'a', newline='') as csvfile:
                 csvwriter = csv.writer(csvfile)
                 csvwriter.writerow(info_arr)

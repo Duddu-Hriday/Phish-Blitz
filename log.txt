@@ -1,0 +1,24 @@
+--2024-08-05 09:41:24--  https://facebook.com/
+Resolving facebook.com (facebook.com)... 163.70.139.35, 2a03:2880:f12f:83:face:b00c:0:25de
+Connecting to facebook.com (facebook.com)|163.70.139.35|:443... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://www.facebook.com/ [following]
+--2024-08-05 09:41:28--  https://www.facebook.com/
+Resolving www.facebook.com (www.facebook.com)... 163.70.139.35, 2a03:2880:f184:186:face:b00c:0:25de
+Connecting to www.facebook.com (www.facebook.com)|163.70.139.35|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘legitimate_resources/fully_downloaded_web_pages/2_facebook/facebook.com/index.html’
+
+     0K .......... .......... .......... .......... ..........  302K
+    50K .......... ...                                          479K=0.2s
+
+Last-modified header missing -- time-stamps turned off.
+2024-08-05 09:41:29 (328 KB/s) - ‘legitimate_resources/fully_downloaded_web_pages/2_facebook/facebook.com/index.html’ saved [64811]
+
+FINISHED --2024-08-05 09:41:29--
+Total wall clock time: 4.5s
+Downloaded: 1 files, 63K in 0.2s (328 KB/s)
+Converting links in legitimate_resources/fully_downloaded_web_pages/2_facebook/facebook.com/index.html... 28.
+4-24
+Converted links in 1 files in 0.002 seconds.
