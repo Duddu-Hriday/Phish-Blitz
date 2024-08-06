@@ -179,7 +179,7 @@ def download_legitimate_sites():
             resource_dir = os.path.join(outer_folder, folder, 'local_resources')
 
             update_html(html_file, resource_dir, new_cleaned_url)
-            d_time = time.time()
+            # d_time = time.time()
 
             screenshots = os.path.join(resource_dir, 'screenshots')
             os.makedirs(screenshots, exist_ok=True)
@@ -203,16 +203,18 @@ def download_legitimate_sites():
                 task.join()
             ss_end = time.time()
             screenshots_taken = True
+            ssim_index = "Null"
+            hist_corr = "Null"
             if not os.path.exists(online) or not os.path.exists(offline):
                 screenshots_taken = False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
                 # count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+            else:
+                ssim_index, hist_corr = compare_images(online, offline)
 
-            ssim_index, hist_corr = compare_images(online, offline)
-
-            print(f"SSIM Index: {ssim_index}")
-            print(f"Histogram Correlation: {hist_corr}")
+                print(f"SSIM Index: {ssim_index}")
+                print(f"Histogram Correlation: {hist_corr}")
             # if hist_corr < 0.8:
             #     logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
             #     count -= 1
@@ -364,16 +366,17 @@ def download_phishing_sites():
                 task.join()
             ss_end = time.time()
             screenshots_taken = True
+            ssim_index = "Null"
+            hist_corr = "Null"
             if not os.path.exists(online) or not os.path.exists(offline):
                 screenshots_taken =  False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
                 # count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
-
-            ssim_index, hist_corr = compare_images(online, offline)
-
-            print(f"SSIM Index: {ssim_index}")
-            print(f"Histogram Correlation: {hist_corr}")
+            else:
+                ssim_index, hist_corr = compare_images(online, offline)
+                print(f"SSIM Index: {ssim_index}")
+                print(f"Histogram Correlation: {hist_corr}")
             # if hist_corr < 0.8:
             #     logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
             #     count -= 1
