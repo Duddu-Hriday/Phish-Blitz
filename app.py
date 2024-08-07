@@ -202,19 +202,24 @@ def download_legitimate_sites():
             for task in images:
                 task.join()
             ss_end = time.time()
-            screenshots_taken = True
-            ssim_index = "Null"
-            hist_corr = "Null"
-            if not os.path.exists(online) or not os.path.exists(offline):
+            # screenshots_taken = True
+            # ssim_index = "Null"
+            # hist_corr = "Null"
+            if not os.path.exists(online) and not os.path.exists(offline):
                 screenshots_taken = False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
                 # count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
-            else:
+
+            if os.path.exists(online) and os.path.exists(offline):
                 ssim_index, hist_corr = compare_images(online, offline)
 
                 print(f"SSIM Index: {ssim_index}")
                 print(f"Histogram Correlation: {hist_corr}")
+                image = os.path.join(base_dir,'image_comparision.txt')
+                print(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
+                with open(image, 'a') as file:
+                    file.write(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
             # if hist_corr < 0.8:
             #     logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
             #     count -= 1
@@ -225,10 +230,10 @@ def download_legitimate_sites():
             print(str(total_time)+","+str(ss_time)+","+str(screenshots_taken))
             with open("legitimate_observations.txt",'a') as obs_file:
                 obs_file.write(str(total_time)+","+str(ss_time)+","+str(screenshots_taken)+"\n")
-            image = os.path.join(base_dir,'image_comparision.txt')
-            print(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
-            with open(image, 'a') as file:
-                file.write(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
+            # image = os.path.join(base_dir,'image_comparision.txt')
+            # print(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
+            # with open(image, 'a') as file:
+            #     file.write(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
 
             info_arr = [str(count), str(cleaned_url), str(html_file)]
             print(info_arr)
@@ -368,15 +373,18 @@ def download_phishing_sites():
             screenshots_taken = True
             ssim_index = "Null"
             hist_corr = "Null"
-            if not os.path.exists(online) or not os.path.exists(offline):
+            if not os.path.exists(online) and not os.path.exists(offline):
                 screenshots_taken =  False
-                logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
+                logging.warning(f" {online} and {offline} images are missing. Deleting {outer_folder}...")
                 # count -= 1
                 move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
-            else:
+
+            if os.path.exists(online) and os.path.exists(offline):
                 ssim_index, hist_corr = compare_images(online, offline)
                 print(f"SSIM Index: {ssim_index}")
                 print(f"Histogram Correlation: {hist_corr}")
+                with open('image_comparision.txt', 'a') as file:
+                    file.write(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
             # if hist_corr < 0.8:
             #     logging.warning(f"Histogram correlation {hist_corr} is less than 0.8. Deleting {outer_folder}...")
             #     count -= 1
@@ -386,8 +394,7 @@ def download_phishing_sites():
             ss_time = ss_end - ss_start
             with open("phishing_observations.txt","a") as obs_file:
                 obs_file.write(str(total_time)+","+str(ss_time)+","+str(screenshots_taken)+"\n")
-            with open('image_comparision.txt', 'a') as file:
-                file.write(f"{str(cleaned_url)}\tSSIM Index = {str(ssim_index)}\tHistogram Correlation = {str(hist_corr)}\n")
+            
 
             info_arr = [str(count), str(cleaned_url), str(html_file)]
             with open(csv_file, 'a', newline='') as csvfile:
