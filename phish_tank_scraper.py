@@ -9,8 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 import csv
 
 
-def threshold_time(file):
-    return "2000-01-01 00:00:00"
+
 
 def html_file(url):
     try:
@@ -38,7 +37,7 @@ def extract_time(input_string):
 
     # Use the extracted date and time for future usage
     formatted_date_time = date_time_obj.strftime("%Y-%m-%d %H:%M:%S")
-    print("Formatted Date and Time:", formatted_date_time)
+    # print("Formatted Date and Time:", formatted_date_time)
     return formatted_date_time
 
 def remove_last_part_of_url(url):
@@ -82,45 +81,16 @@ def scraping(html_content, data):
         valid_phish.append(td[3])
         online.append(td[4])
 
-        # try:
-        #     response = requests.get(new_url, timeout=10)
-        #     if not response.status_code == 200:
-        #         print('Phishing site: Status code not 200')
-        #         continue
-        #     print("Phishing site returns 200")
-        #     urls.append(new_url)
-        #     valid_phish.append(td[3])
-        #     online.append(td[4])
-        # except requests.RequestException:
-        #     print('Phishing site: Unable to get response')
-        #     continue
-
-    cutoff_date_str = threshold_time('time_old.txt')
-    # print('cutoff = ' + cutoff_date_str)
-    cutoff_date = datetime.strptime(cutoff_date_str, "%Y-%m-%d %H:%M:%S")
-
     for i in range(len(urls)):
-        current_time = datetime.strptime(time_list[i], "%Y-%m-%d %H:%M:%S")
-        if current_time > cutoff_date:
-            data.append({
-                "url": urls[i],
-                "valid_phish": valid_phish[i].text,
-                "online": online[i].text,
-                "time": time_list[i]
-            })
-        else:
-            print("Already Exists in the data")
+        
+        data.append({
+            "url": urls[i],
+            "valid_phish": valid_phish[i].text,
+            "online": online[i].text,
+            "time": time_list[i]
+        })
 
-def extract_most_recent_timestamp(data):
-    most_recent_time = None
-    
-    for entry in data:
-        timestamp_str = entry['time']
-        timestamp = datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S')
-        if most_recent_time is None or timestamp > most_recent_time:
-            most_recent_time = timestamp
-    
-    return most_recent_time
+
 
 def fetch_and_scrape_page(day, page, data):
     url = f"https://phishtank.org/phish_search.php?page={page}&valid=y&Search=Search"

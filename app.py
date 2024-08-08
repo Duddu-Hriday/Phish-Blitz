@@ -279,6 +279,9 @@ def download_phishing_sites():
                 url = "https://" + url_dict['url']
             else:
                 url = url_dict['url']
+            
+            if not url.endswith('/'):
+                url = url + '/'
             new_cleaned_url = clean_url(url)
             if new_cleaned_url.startswith('http://'):
                 cleaned_url =  new_cleaned_url[7:]
