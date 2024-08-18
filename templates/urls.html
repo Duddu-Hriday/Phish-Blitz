@@ -90,10 +90,10 @@
                 <img src="/static/live-phishing.png" class="card-img-top" alt="live-phishing" style="width:200px;">
                 <div class="card-body">
                     <h5 class="card-title">Phishing Urls</h5>
-                    <p class="card-text">Get Live Phishing websites from Phishtank</p>
+                    <p class="card-text">Get Live Phishing websites from PhishStats</p>
                 
                 <form action="/phishing-urls" method="POST" id="myForm">
-                    <label for="userInput">Enter Count of Pages:</label><br><br>
+                    <label for="userInput">Enter Count of Phishing URLs:</label><br><br>
                     <input type="text" id="userInput" name="userInput" required><br><br>
                     <input type="submit" value="Submit" class="btn btn-primary">
                 </form>
@@ -113,7 +113,7 @@
                     <p class="card-text">Page Rank wise URLs</p>
                 </div>
                 <form action="/legitimate-urls" method="POST">
-                    <label for="userInputLegit">Enter Count of URLs:</label><br><br>
+                    <label for="userInputLegit">Enter Count of Legitimate URLs:</label><br><br>
                     <input type="text" id="userInputLegit" name="userInputLegit" required><br><br>
                     <input type="submit" value="Submit" class="btn btn-primary">
                 </form>
