@@ -5,6 +5,7 @@ from phish_tank_scraper import fetch_and_scrape_page
 from url_features_extraction import extract_features
 from html_features_extraction import main_fun
 from download_webpage import clean_url,update_html,url_screenshot,compare_images,move_to_partially_downloaded
+from phishstats import fetch_phishing_data
 import os
 import csv
 import logging
@@ -29,26 +30,33 @@ def fetch_urls_page():
     return render_template("urls.html")
 
 @app.route("/phishing-urls", methods=["POST"])
+# def phishing_urls():
+#     user_input = request.form['userInput']
+#     global phishing_data
+#     day = 0
+#     pages = int(user_input)
+
+#     with ThreadPoolExecutor(max_workers=100) as executor:
+#         futures = [executor.submit(fetch_and_scrape_page, day, page, phishing_data) for page in range(pages)]
+
+#         # Ensure all threads have completed
+#         for future in futures:
+#             try:
+#                 future.result()
+#             except Exception as e:
+#                 print(f"Thread resulted in an error: {e}")
+
+#     print(phishing_data)
+
+#     # Do something with user_input, such as processing or storing it
+#     return render_template("phishing-urls.html",urls = phishing_data)
 def phishing_urls():
     user_input = request.form['userInput']
     global phishing_data
-    day = 0
-    pages = int(user_input)
+    count = int(user_input)
+    phishing_data = fetch_phishing_data(count)
+    return render_template("phishing-urls.html", urls = phishing_data)
 
-    with ThreadPoolExecutor(max_workers=100) as executor:
-        futures = [executor.submit(fetch_and_scrape_page, day, page, phishing_data) for page in range(pages)]
-
-        # Ensure all threads have completed
-        for future in futures:
-            try:
-                future.result()
-            except Exception as e:
-                print(f"Thread resulted in an error: {e}")
-
-    print(phishing_data)
-
-    # Do something with user_input, such as processing or storing it
-    return render_template("phishing-urls.html",urls = phishing_data)
 
 @app.route("/legitimate-urls", methods = ["POST"])
 def legitimate_urls():
@@ -110,6 +118,9 @@ def download_legitimate_sites():
                 url = "https://" + url_dict['url']
             else:
                 url = url_dict['url']
+            
+            if not url.endswith('/'):
+                url = url + '/'
             new_cleaned_url = clean_url(url)
             if new_cleaned_url.startswith('http://'):
                 cleaned_url =  new_cleaned_url[7:]
@@ -172,7 +183,7 @@ def download_legitimate_sites():
                     # count -= 1
                     # move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
-            index_html = 'index.html'
+            # index_html = 'index.html'
             print("HTML FILE = " + index_html)
 
             html_file = os.path.join(outer_folder, folder, index_html)
@@ -205,6 +216,7 @@ def download_legitimate_sites():
             # screenshots_taken = True
             # ssim_index = "Null"
             # hist_corr = "Null"
+            screenshots_taken = True
             if not os.path.exists(online) and not os.path.exists(offline):
                 screenshots_taken = False
                 logging.warning(f"One of {online} or {offline} is missing. Deleting {outer_folder}...")
@@ -276,7 +288,7 @@ def download_phishing_sites():
         try:
             start_time = time.time()
             if not(url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
-                url = "https://" + url_dict['url']
+                url = "http://" + url_dict['url']
             else:
                 url = url_dict['url']
             
@@ -343,15 +355,13 @@ def download_phishing_sites():
                     # count -= 1
                     # move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
 
-            index_html = 'index.html'
+            # index_html = 'index.html'
             print("HTML FILE = " + index_html)
 
             html_file = os.path.join(outer_folder, folder, index_html)
             resource_dir = os.path.join(outer_folder, folder, 'local_resources')
 
             update_html(html_file, resource_dir, new_cleaned_url)
-            d_time = time.time()
-
             screenshots = os.path.join(resource_dir, 'screenshots')
             os.makedirs(screenshots, exist_ok=True)
             online = os.path.join(screenshots, 'online.png')
@@ -374,8 +384,6 @@ def download_phishing_sites():
                 task.join()
             ss_end = time.time()
             screenshots_taken = True
-            ssim_index = "Null"
-            hist_corr = "Null"
             if not os.path.exists(online) and not os.path.exists(offline):
                 screenshots_taken =  False
                 logging.warning(f" {online} and {offline} images are missing. Deleting {outer_folder}...")
