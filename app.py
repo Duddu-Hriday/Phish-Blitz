@@ -115,25 +115,36 @@ def download_legitimate_sites():
         count += 1
         try:
             start_time = time.time()
-            if not(url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
-                url = "https://" + url_dict['url']
+            if not (url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
+                url = "http://" + url_dict['url']
             else:
                 url = url_dict['url']
-            
-            # if not url.endswith('/'):
-            #     url = url + '/'
+
             new_cleaned_url = clean_url(url)
             if new_cleaned_url.startswith('http://'):
-                cleaned_url =  new_cleaned_url[7:]
+                cleaned_url = new_cleaned_url[7:]
             else:
                 cleaned_url = new_cleaned_url[8:]
 
             url_parts = cleaned_url.split('/')
-            # folder = cleaned_url
-            if url_parts[-1].endswith('.html'):
-                folder = '/'.join(url_parts[:-1])  # Exclude the last part
-            else:
+
+            if len(url_parts) == 1:
+                # Case 1: URL is of the form google.com
                 folder = cleaned_url
+                html_file = "index.html"  # Default to index.html
+            elif len(url_parts) > 1:
+                if url_parts[-1] == '':
+                    # Case 3: URL is of the form google.com/images/
+                    folder = cleaned_url.rstrip('/')
+                    html_file = "index.html"  # Default to index.html
+                else:
+                    # Case 2: URL is of the form google.com/images
+                    folder = '/'.join(url_parts[:-1])
+                    html_file = url_parts[-1] + ".html"
+
+            print(f"Folder Path: {folder}")
+            print(f"HTML File: {html_file}")
+
                 
             domain = tldextract.extract(cleaned_url).domain
             outer_folder = os.path.join(resources_base_dir, f"{count}_{domain}")
@@ -178,15 +189,15 @@ def download_legitimate_sites():
 
             logging.info(result)
             full_folder = os.path.join(outer_folder, folder)
-            if not os.path.isdir(full_folder):
-                    parent_folder = os.path.dirname(full_folder)
-                    if os.path.exists(parent_folder) and os.path.isdir(parent_folder):
-                        print(f"'{full_folder}' is not a directory. Checking parent folder '{parent_folder}'.")
-                        full_folder = parent_folder
-                    else:
-                        print(f"Neither '{full_folder}' nor its parent folder exists.")
-                        move_to_partially_downloaded(full_folder, partially_downloaded_base_dir)
-                        return
+            # if not os.path.isdir(full_folder):
+            #         parent_folder = os.path.dirname(full_folder)
+            #         if os.path.exists(parent_folder) and os.path.isdir(parent_folder):
+            #             print(f"'{full_folder}' is not a directory. Checking parent folder '{parent_folder}'.")
+            #             full_folder = parent_folder
+            #         else:
+            #             print(f"Neither '{full_folder}' nor its parent folder exists.")
+            #             move_to_partially_downloaded(full_folder, partially_downloaded_base_dir)
+            #             return
                     
             is_index = False
             for filename in os.listdir(full_folder):
@@ -195,25 +206,32 @@ def download_legitimate_sites():
                         index_html = 'index.html'
                         is_index = True
                         break
-                    
+            if not is_index and html_file!='index.html':
+                for filename in os.listdir(full_folder):
+                    if os.path.isfile(os.path.join(full_folder, filename)):
+                        if filename == html_file:
+                            index_html = html_file
+                            is_index = True
+                            break
             if not is_index:
                 for filename in os.listdir(full_folder):
                     if os.path.isfile(os.path.join(full_folder, filename)) and filename.endswith('html'):
                         index_html = filename
                         is_index = True
                         break
-            if not is_index:
-                # If not found in the expected folder, check one level up
-                parent_folder = os.path.dirname(full_folder)
-                print(f"index.html not found in {full_folder}, checking in parent folder {parent_folder}")
-                # Check if parent_folder exists and search there
-                if os.path.exists(parent_folder):
-                    for filename in os.listdir(parent_folder):
-                        if os.path.isfile(os.path.join(parent_folder, filename)) and filename.endswith('html'):
-                            index_html = filename
-                            full_folder = parent_folder  # Update to the parent folder
-                            is_index = True
-                            break
+
+            # if not is_index:
+            #     # If not found in the expected folder, check one level up
+            #     parent_folder = os.path.dirname(full_folder)
+            #     print(f"index.html not found in {full_folder}, checking in parent folder {parent_folder}")
+            #     # Check if parent_folder exists and search there
+            #     if os.path.exists(parent_folder):
+            #         for filename in os.listdir(parent_folder):
+            #             if os.path.isfile(os.path.join(parent_folder, filename)) and filename.endswith('html'):
+            #                 index_html = filename
+            #                 full_folder = parent_folder  # Update to the parent folder
+            #                 is_index = True
+            #                 break
                             
             # If still not found, move the folder to partially downloaded and continue
             if not is_index:
@@ -324,27 +342,38 @@ def download_phishing_sites():
         count += 1
         try:
             start_time = time.time()
-            if not(url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
+            if not (url_dict['url'].startswith('https://') or url_dict['url'].startswith('http://')):
                 url = "http://" + url_dict['url']
             else:
                 url = url_dict['url']
             
-            # if not url.endswith('/'):
-            #     url = url + '/'
             new_cleaned_url = clean_url(url)
             if new_cleaned_url.startswith('http://'):
-                cleaned_url =  new_cleaned_url[7:]
+                cleaned_url = new_cleaned_url[7:]
             else:
                 cleaned_url = new_cleaned_url[8:]
-
-            # folder = cleaned_url
+            
             url_parts = cleaned_url.split('/')
-
-            # Check if the last part ends with .html, remove it if so
-            if url_parts[-1].endswith('.html'):
-                folder = '/'.join(url_parts[:-1])  # Exclude the last part
-            else:
+            
+            if len(url_parts) == 1:
+                # Case 1: URL is of the form google.com
                 folder = cleaned_url
+                html_file = "index.html"  # Default to index.html
+            elif len(url_parts) > 1:
+                if url_parts[-1] == '':
+                    # Case 3: URL is of the form google.com/images/
+                    folder = cleaned_url.rstrip('/')
+                    html_file = "index.html"  # Default to index.html
+                else:
+                    # Case 2: URL is of the form google.com/images
+                    folder = '/'.join(url_parts[:-1])
+                    if html_file.endswith('.html'):
+                        html_file = url_parts[-1]
+                    else:
+                        html_file = url_parts[-1] + ".html"
+            
+            print(f"Folder Path: {folder}")
+            print(f"HTML File: {html_file}")
 
             domain = tldextract.extract(cleaned_url).domain
             outer_folder = os.path.join(resources_base_dir, f"{count}_{domain}")
@@ -392,15 +421,16 @@ def download_phishing_sites():
             logging.info(result)
             full_folder = os.path.join(outer_folder, folder)
 
-            if not os.path.isdir(full_folder):
-                parent_folder = os.path.dirname(full_folder)
-                if os.path.exists(parent_folder) and os.path.isdir(parent_folder):
-                    print(f"'{full_folder}' is not a directory. Checking parent folder '{parent_folder}'.")
-                    full_folder = parent_folder
-                else:
-                    print(f"Neither '{full_folder}' nor its parent folder exists.")
-                    move_to_partially_downloaded(full_folder, partially_downloaded_base_dir)
-                    continue
+            # if not os.path.isdir(full_folder):
+            #     parent_folder = os.path.dirname(full_folder)
+            #     if os.path.exists(parent_folder) and os.path.isdir(parent_folder):
+            #         print(f"'{full_folder}' is not a directory. Checking parent folder '{parent_folder}'.")
+            #         full_folder = parent_folder
+            #     else:
+            #         print(f"Neither '{full_folder}' nor its parent folder exists.")
+            #         move_to_partially_downloaded(full_folder, partially_downloaded_base_dir)
+            #         continue
+
             is_index = False
             for filename in os.listdir(full_folder):
                 if os.path.isfile(os.path.join(full_folder, filename)):
@@ -408,6 +438,13 @@ def download_phishing_sites():
                         index_html = 'index.html'
                         is_index = True
                         break
+            if not is_index and html_file!='index.html':
+                for filename in os.listdir(full_folder):
+                    if os.path.isfile(os.path.join(full_folder, filename)):
+                        if filename == html_file:
+                            index_html = html_file
+                            is_index = True
+                            break
                     
             if not is_index:
                 for filename in os.listdir(full_folder):
@@ -415,25 +452,25 @@ def download_phishing_sites():
                         index_html = filename
                         is_index = True
                         break
-                else:
-                    # If not found in the expected folder, check one level up
-                    parent_folder = os.path.dirname(full_folder)
-                    print(f"index.html not found in {full_folder}, checking in parent folder {parent_folder}")
+                # else:
+                #     # If not found in the expected folder, check one level up
+                #     parent_folder = os.path.dirname(full_folder)
+                #     print(f"index.html not found in {full_folder}, checking in parent folder {parent_folder}")
 
-                    # Check if parent_folder exists and search there
-                    if os.path.exists(parent_folder):
-                        for filename in os.listdir(parent_folder):
-                            if os.path.isfile(os.path.join(parent_folder, filename)) and filename.endswith('html'):
-                                index_html = filename
-                                full_folder = parent_folder  # Update to the parent folder
-                                is_index = True
-                                break
+                #     # Check if parent_folder exists and search there
+                #     if os.path.exists(parent_folder):
+                #         for filename in os.listdir(parent_folder):
+                #             if os.path.isfile(os.path.join(parent_folder, filename)) and filename.endswith('html'):
+                #                 index_html = filename
+                #                 full_folder = parent_folder  # Update to the parent folder
+                #                 is_index = True
+                #                 break
                             
                     # If still not found, move the folder to partially downloaded and continue
-                    if not is_index:
-                        print("index.html not found in parent folder either")
-                        move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
-                        continue
+            if not is_index:
+                print("index.html not found in parent folder either")
+                move_to_partially_downloaded(outer_folder, partially_downloaded_base_dir)
+                continue
                     
             print("HTML FILE = " + index_html)
 
