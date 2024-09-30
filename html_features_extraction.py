@@ -257,11 +257,11 @@ class html_check():
         except:
             return 0
 
-    def domain_occurrence(self):
-        try:
-            return str(self.text).count(self.domain)
-        except:
-            return 0
+    # def domain_occurrence(self):
+    #     try:
+    #         return str(self.text).count(self.domain)
+    #     except:
+    #         return 0
 
     def brand_freq_domain(self):
         link_list = html_check.find_all_link(self)
@@ -313,14 +313,16 @@ class html_check():
         bad_links = 0
 
         def check_link(link):
-            if link[:5] != "https" and link[:5] != 'http:':
+            # Ensure link is not empty before checking its first character
+            if link and link[:5] != "https" and link[:5] != 'http:':
                 if link[0] == '/':
-                    link = self.url + link
+                    link = self.url.rstrip('/') + link  # Properly handle trailing '/'
                 else:
-                    link = self.url + '/' + link
+                    link = self.url.rstrip('/') + '/' + link  # Add '/' if not present
 
-            if link[:4] != 'http':
-                link = 'https://' + link
+            if link[:4] != 'http':  # Ensure it starts with a valid protocol
+                link = 'https://' + link.lstrip('/')  # Avoid double slashes
+
             try:
                 response = requests.get(link, timeout=5)
                 if response.status_code == 200:
@@ -340,6 +342,7 @@ class html_check():
                     bad_links += 1
 
         return good_links, bad_links
+
     
 
     def multiple_https_check(self):
@@ -381,10 +384,14 @@ class html_check():
             return True
         return False
 
-    def num_of_redirects(self):
-        response = requests.get("https://" + self.url, allow_redirects=True)
-        redirects = len(response.history)
-        return redirects
+    # def num_of_redirects(self):
+    #     try:
+    #         # response = requests.get("https://" + self.url, allow_redirects=True)
+    #         response = requests.get("https://" + self.url, allow_redirects=True, timeout=10)
+    #         redirects = len(response.history)
+    #         return redirects
+    #     except:
+    #         return -1
     
     def has_window_status(soup):
         # soup = self.text
@@ -454,7 +461,7 @@ def main_fun(main_folder):
                     'title_domain': '-',
                     'internal_resource': '-',
                     'external_resource': '-',
-                    'domain_occurrence': '-',
+                    # 'domain_occurrence': '-',
                     'brand_domain': '-',
                     'working_links': '-',
                     'not_working_links': '-',
@@ -462,7 +469,7 @@ def main_fun(main_folder):
                     'form_empty_action': '-',
                     'same_form_action_domain': '-',
                     'is_mail': '-',
-                    'num_of_redirects': '-',
+                    # 'num_of_redirects': '-',
                     'status_bar_customization':'-'
                 }
             else:
@@ -481,7 +488,7 @@ def main_fun(main_folder):
                     'title_domain': test.title_domain(),
                     'internal_resource': test.internal_external_resource()[0],
                     'external_resource': test.internal_external_resource()[1],
-                    'domain_occurrence': test.domain_occurrence(),
+                    # 'domain_occurrence': test.domain_occurrence(),
                     'brand_domain': test.brand_freq_domain(),
                     'working_links': test.is_link_valid()[0],
                     'not_working_links': test.is_link_valid()[1],
@@ -489,7 +496,7 @@ def main_fun(main_folder):
                     'form_empty_action': test.form_empty_action(),
                     'same_form_action_domain': test.same_form_action_domain(),
                     'is_mail': test.is_mail(),
-                    'num_of_redirects': test.num_of_redirects(),
+                    # 'num_of_redirects': test.num_of_redirects(),
                     'status_bar_customization': test.status_bar_customization()
                 }
 

@@ -161,7 +161,7 @@ def download_legitimate_sites():
             command = [
                 'wget',
                 '--mirror',
-                '--convert-links',
+                # '--convert-links',
                 '--adjust-extension',
                 '--page-requisites',
                 '--no-parent',
@@ -177,15 +177,15 @@ def download_legitimate_sites():
             full_command = ['timeout', '10'] + command
 
             result = subprocess.run(full_command, text=True, capture_output=True)
-            try:
-                response = requests.get(new_cleaned_url, headers={'User-Agent': user_agent}, timeout=10)
-                status_code = response.status_code
-            except requests.exceptions.RequestException as e:
-                # Handle any requests exceptions, such as timeouts, connection errors, etc.
-                status_code = "Request Failed"
+            # try:
+            #     response = requests.get(new_cleaned_url, headers={'User-Agent': user_agent}, timeout=10)
+            #     status_code = response.status_code
+            # except requests.exceptions.RequestException as e:
+            #     # Handle any requests exceptions, such as timeouts, connection errors, etc.
+            #     status_code = "Request Failed"
 
-            with open("requests_check_legit.txt", "a") as f:
-                f.write(f"{new_cleaned_url},{status_code},{result.returncode}\n")
+            # with open("requests_check_legit.txt", "a") as f:
+            #     f.write(f"{new_cleaned_url},{status_code},{result.returncode}\n")
 
             logging.info(result)
             full_folder = os.path.join(outer_folder, folder)
@@ -390,7 +390,7 @@ def download_phishing_sites():
             command = [
                 'wget',
                 '--mirror',
-                '--convert-links',
+                # '--convert-links',
                 '--adjust-extension',
                 '--page-requisites',
                 '--no-parent',
@@ -407,16 +407,16 @@ def download_phishing_sites():
 
             result = subprocess.run(full_command, text=True, capture_output=True)
 
-            try:
-                response = requests.get(new_cleaned_url, headers={'User-Agent': user_agent}, timeout=10)
-                status_code = response.status_code
-            except requests.exceptions.RequestException as e:
-                # Handle any requests exceptions, such as timeouts, connection errors, etc.
-                status_code = "Request Failed"
+            # try:
+            #     response = requests.get(new_cleaned_url, headers={'User-Agent': user_agent}, timeout=10)
+            #     status_code = response.status_code
+            # except requests.exceptions.RequestException as e:
+            #     # Handle any requests exceptions, such as timeouts, connection errors, etc.
+            #     status_code = "Request Failed"
 
-            # Log the URL, status code, and wget return code to why.txt
-            with open("requests_check_phishing.txt", "a") as f:
-                f.write(f"{new_cleaned_url},{status_code},{result.returncode}\n")
+            # # Log the URL, status code, and wget return code to why.txt
+            # with open("requests_check_phishing.txt", "a") as f:
+            #     f.write(f"{new_cleaned_url},{status_code},{result.returncode}\n")
 
             logging.info(result)
             full_folder = os.path.join(outer_folder, folder)
