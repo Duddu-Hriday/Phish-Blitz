@@ -161,7 +161,7 @@ def download_legitimate_sites():
             command = [
                 'wget',
                 '--mirror',
-                # '--convert-links',
+                '--convert-links',
                 '--adjust-extension',
                 '--page-requisites',
                 '--no-parent',
@@ -390,7 +390,7 @@ def download_phishing_sites():
             command = [
                 'wget',
                 '--mirror',
-                # '--convert-links',
+                '--convert-links',
                 '--adjust-extension',
                 '--page-requisites',
                 '--no-parent',
