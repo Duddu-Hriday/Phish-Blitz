@@ -43,7 +43,9 @@ Follow these simple steps to set up and run Phish-Blitz on your system:
     ```
 
 That's it! Phish-Blitz will now begin processing URLs and downloading web resources.
-
+## License
+Here is the link to the dataset:
+https://iitdh-my.sharepoint.com/:f:/g/personal/222011001_iitdh_ac_in/EjiS5itXWzZFtcqNGf-qFYEBNWrlM9ERz4JwFcY0KJe0DA?e=0CZatU
 ## Contributing
 We welcome contributions from the community! If you'd like to contribute:
 1. Fork the repository.
